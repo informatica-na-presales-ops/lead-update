@@ -1,0 +1,132 @@
+<!doctype html>
+<head>
+	<title>Edit Lead</title>
+	<link rel="stylesheet" type="text/css" href="/static/lead.css">
+	<script src="/static/jquery-3.6.1.min.js"></script>
+	<script src="/static/lead.js"></script>
+</head>
+
+<div id="header">{{ label }}<div id="updated"></div></div>
+
+<form id="lead">
+<div id="details">
+
+	<div>SFDC Lead ID</div>
+	<input id="lead_id" disabled value="{{ lead_id }}"></input>
+	
+	<!-- Produce either error screen or regular version -->
+	{% if error %}
+
+		<div>Error</div>
+		<div>{{ error }}</div>
+		
+	{% else %}
+
+	<div>Status</div>
+
+	<select id="status" onchange="statusChange()">		
+		<option selected=selected>Unmanaged</option>
+		<option>Contacting</option>
+		<option>Engaged</option>
+		<option>Disqualified</option>
+		<option>Opportunity</option>
+	</select>
+	
+	<div>Opp Number</div>
+	<input id="opp_number" disabled></input>
+	
+	<div>Disqualification Reason</div>
+
+	<select id="dq_reason" disabled>		
+		<option selected></option>
+		<option>Unresponsive</option>
+		<option>Personal Use</option>
+		<option>Product Fit</option>
+		<option>Budget Fit</option>
+	</select>
+	
+	<div>DSR</div>
+	<select id="dsr">		
+		<option selected=selected></option>
+		<option>Aaron Burt</option>
+		<option>Adjei Ayeh</option>
+		<option>Amanda Collado</option>
+		<option>Blake Schulz</option>
+		<option>Cole Glass</option>
+		<option>Cole Miller</option>
+		<option>Connor Hogsten</option>
+		<option>Daniel Connolly</option>
+		<option>Day Conley</option>
+		<option>Edith Classen</option>
+		<option>Gloria Weber</option>
+		<option>Hunter Wynns</option>
+		<option>Ian Chesher</option>
+		<option>Jean-marie Operi</option>
+		<option>Kyle Barker</option>
+		<option>Luis Martinho</option>
+		<option>Megan Ortiz</option>
+		<option>Michael Minifee</option>
+		<option>Nathan Grimm</option>
+		<option>Nicholas Larsen</option>
+		<option>Oshone Oshomah</option>
+		<option>Patrick Widmer</option>
+		<option>Ronalds Virbulis</option>
+		<option>Slater Caskey</option>
+		<option>Tibor Hiemcke</option>
+		<option>Tony Nguyen</option>
+		<option>Vanisha Cabell</option>
+		<option>Zeki Erdogan</option>
+	</select>
+	
+	<div>Presales</div>
+	<select id="presales">		
+		<option selected=selected></option>
+		<option>Abdelhamid Benfraj</option>
+		<option>Alexander Hingl</option>
+		<option>Alexander Wiederkehr</option>
+		<option>Art Sanchez</option>
+		<option>Chris Derner</option>
+		<option>Glenda Okeefe</option>
+		<option>Hilana Gastanttinis</option>
+		<option>Kyle Clancy</option>
+		<option>Matt Lutostanski</option>
+		<option>Paul Pramayon</option>
+	</select>
+	
+	<div>Notes</div>
+	<input id="notes"></input>
+	
+	<button style="grid-column-start: 2; background-color: #8cc4d3" type="button" onclick="save()" id="save_button">Save</button>
+	
+	{% endif %}
+
+</div></form>
+
+<script>	
+	// Populate values received from flask template into form
+	
+	info = {{ info | safe }};
+	console.log(info);
+	
+	if(info.status != 'Unmanaged') {
+		
+		var d = new Date(info.updated * 1000);
+		jQuery('#updated').html(d.toString());
+		
+		jQuery('#status').val(info.status);
+		
+		// Update UI to reflect allowed fields
+		statusChange();
+		
+		// Set other fields
+		jQuery('#opp_number').val(info.opp_number);
+		jQuery('#dq_reason').val(info.dq_reason);		
+		jQuery('#dsr').val(info.dsr);
+		jQuery('#presales').val(info.presales);
+		jQuery('#notes').val(info.notes);
+	}
+	
+	// Setup off button blur
+	jQuery('input, select').focus(save_reset);
+	
+</script>

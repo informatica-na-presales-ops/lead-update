@@ -1,0 +1,6 @@
+--extra-index-url https://alpine-wheels.github.io/index
+
+flask
+notch
+psycopg2
+waitress

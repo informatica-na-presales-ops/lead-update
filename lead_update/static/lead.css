@@ -1,0 +1,30 @@
+body {
+	font-family: sans-serif;
+	margin: 0px;
+}
+
+#header {
+	background-color: #222636;
+	color: #fff;
+	padding: 20px;
+	font-weight: bold;
+}
+
+#details {
+	display: grid;
+	grid-template-columns: 200px 350px;
+	grid-gap: 10px;
+	padding: 20px;
+}
+
+input, select, button {
+	padding:5px 5px;
+    line-height:110%;
+}
+
+#updated {
+	display: inline;
+	margin-left: 50px;
+	color: #999;
+}
+
