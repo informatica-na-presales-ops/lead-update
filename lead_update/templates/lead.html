@@ -24,12 +24,11 @@
 
 	<div>Status</div>
 
-	<select id="status" onchange="statusChange()">		
+	<select id="status" onchange="statusChange()">
 		<option selected=selected>Unmanaged</option>
-		<option>Contacting</option>
-		<option>Engaged</option>
-		<option>Disqualified</option>
-		<option>Opportunity</option>
+		{% for st in info.picklist.status %}
+		<option>{{st}}</option>
+		{% endfor %}
 	</select>
 	
 	<div>Opp Number</div>
@@ -39,58 +38,25 @@
 
 	<select id="dq_reason" disabled>		
 		<option selected></option>
-		<option>Unresponsive</option>
-		<option>Personal Use</option>
-		<option>Product Fit</option>
-		<option>Budget Fit</option>
+		{% for dq in info.picklist.dq_reason %}
+		<option>{{dq}}</option>
+		{% endfor %}
 	</select>
 	
 	<div>DSR</div>
-	<select id="dsr">		
+	<select id="dsr">
 		<option selected=selected></option>
-		<option>Aaron Burt</option>
-		<option>Adjei Ayeh</option>
-		<option>Amanda Collado</option>
-		<option>Blake Schulz</option>
-		<option>Cole Glass</option>
-		<option>Cole Miller</option>
-		<option>Connor Hogsten</option>
-		<option>Daniel Connolly</option>
-		<option>Day Conley</option>
-		<option>Edith Classen</option>
-		<option>Gloria Weber</option>
-		<option>Hunter Wynns</option>
-		<option>Ian Chesher</option>
-		<option>Jean-marie Operi</option>
-		<option>Kyle Barker</option>
-		<option>Luis Martinho</option>
-		<option>Megan Ortiz</option>
-		<option>Michael Minifee</option>
-		<option>Nathan Grimm</option>
-		<option>Nicholas Larsen</option>
-		<option>Oshone Oshomah</option>
-		<option>Patrick Widmer</option>
-		<option>Ronalds Virbulis</option>
-		<option>Slater Caskey</option>
-		<option>Tibor Hiemcke</option>
-		<option>Tony Nguyen</option>
-		<option>Vanisha Cabell</option>
-		<option>Zeki Erdogan</option>
+		{% for dsr in info.picklist.dsr %}
+		<option>{{dsr}}</option>
+		{% endfor %}
 	</select>
 	
 	<div>Presales</div>
 	<select id="presales">		
 		<option selected=selected></option>
-		<option>Abdelhamid Benfraj</option>
-		<option>Alexander Hingl</option>
-		<option>Alexander Wiederkehr</option>
-		<option>Art Sanchez</option>
-		<option>Chris Derner</option>
-		<option>Glenda Okeefe</option>
-		<option>Hilana Gastanttinis</option>
-		<option>Kyle Clancy</option>
-		<option>Matt Lutostanski</option>
-		<option>Paul Pramayon</option>
+		{% for presales in info.picklist.presales %}
+		<option>{{presales}}</option>
+		{% endfor %}
 	</select>
 	
 	<div>Notes</div>
@@ -105,25 +71,26 @@
 <script>	
 	// Populate values received from flask template into form
 	
-	info = {{ info | safe }};
-	console.log(info);
+	data = {{info | safe}};
 	
-	if(info.status != 'Unmanaged') {
+	console.log(data);
+	
+	if(data.status != 'Unmanaged') {
 		
-		var d = new Date(info.updated * 1000);
+		var d = new Date(data.updated * 1000);
 		jQuery('#updated').html(d.toString());
 		
-		jQuery('#status').val(info.status);
+		jQuery('#status').val(data.status);
 		
 		// Update UI to reflect allowed fields
 		statusChange();
 		
 		// Set other fields
-		jQuery('#opp_number').val(info.opp_number);
-		jQuery('#dq_reason').val(info.dq_reason);		
-		jQuery('#dsr').val(info.dsr);
-		jQuery('#presales').val(info.presales);
-		jQuery('#notes').val(info.notes);
+		jQuery('#opp_number').val(data.opp_number);
+		jQuery('#dq_reason').val(data.dq_reason);		
+		jQuery('#dsr').val(data.dsr);
+		jQuery('#presales').val(data.presales);
+		jQuery('#notes').val(data.notes);
 	}
 	
 	// Setup off button blur

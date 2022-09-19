@@ -7,7 +7,7 @@ import os
 from flask import Flask, request, render_template
 
 CONN_STRING     = os.getenv('CONN_STRING')
-APIr            = { 'API': 'OK', 'APIVersion': 0.8 }
+APIr            = { 'API': 'OK', 'APIVersion': 0.9 }
 
 app = Flask(__name__)
    
@@ -16,38 +16,66 @@ app = Flask(__name__)
 def edit(lead_id, label=''):
     
     # Get Status from DB
-    resp = getLead(lead_id)
+    resp = getLead(lead_id, True)
     
     if resp['API'] != 'OK':
         return render_template('lead.html', lead_id=lead_id, label=label, error=json.dumps(resp))
     else:
-        return render_template('lead.html', lead_id=lead_id, label=label, info=json.dumps(resp))
+        return render_template('lead.html', lead_id=lead_id, label=label, info=resp)
 
 @app.route('/lead/<lead_id>', methods = ['GET'])
-def getLead(lead_id):
+@app.route('/lead/<lead_id>/<int:picklist>', methods = ['GET'])
+def getLead(lead_id, picklist=False):
 
     r = APIr.copy()
     r['lead_id'] = lead_id
     
     try:
     
+        # Connect and get lead info (if exists)
         conn = psycopg2.connect(CONN_STRING)
         cur  = conn.cursor()
         
         cur.execute('SELECT status, dsr, presales, notes, EXTRACT(epoch from updated), dq_reason, opp_number FROM aseaton.lead_status WHERE sfdc_lead_id = %s', (lead_id,) )
         row = cur.fetchone()
-        conn.close()
-        
+                
         if row == None:
             r['status'] = 'Unmanaged'
         else:
             r['status'] = row[0]
-            r['dsr'] = row[1]
-            r['presales'] = row[2]
-            r['notes'] = row[3]
-            r['updated'] = row[4]
-            r['dq_reason'] = row[5]
-            r['opp_number'] = row[6]
+            r['dsr'] = noneToEmpty(row[1])
+            r['presales'] = noneToEmpty(row[2])
+            r['notes'] = noneToEmpty(row[3])
+            r['updated'] = noneToEmpty(row[4])
+            r['dq_reason'] = noneToEmpty(row[5])
+            r['opp_number'] = noneToEmpty(row[6])
+           
+        # Get picklist values for HTML dropdowns
+        if(picklist):
+            status = []
+            dq_reason = []
+            dsr = []
+            presales = []
+            
+            cur.execute("SELECT pn, pv FROM aseaton.lead_params WHERE type = 'lov' ORDER BY pn, pv")
+            rows = cur.fetchall()
+            
+            for row in rows:
+                if row[0] == 'status':
+                    status.append(row[1])
+                    
+                if row[0] == 'dq_reason':
+                    dq_reason.append(row[1])
+            
+                if row[0] == 'dsr':
+                    dsr.append(row[1])
+                    
+                if row[0] == 'presales':
+                    presales.append(row[1])
+            
+            r['picklist'] = { "status": status, "dq_reason": dq_reason, "dsr": dsr, "presales": presales }
+            
+        conn.close()
     
     except Exception as err:
         r['API'] = 'Error'
@@ -86,6 +114,10 @@ def setLead(lead_id):
                     'presales = EXCLUDED.presales, '
                     'notes = EXCLUDED.notes, '
                     'updated = NOW()', (lead_id, req['status'], opp_number, dq_reason, dsr, presales, notes) )
+                    
+        cur.execute('INSERT INTO aseaton.lead_status_history (sfdc_lead_id, status, opp_number, dq_reason, dsr, presales, notes) values (%s, %s, %s, %s, %s, %s, %s) '
+                    , (lead_id, req['status'], opp_number, dq_reason, dsr, presales, notes) )                    
+        
         conn.commit()
         conn.close()
             
@@ -100,6 +132,13 @@ def emptyToNone(val):
 
     if val == '':
         return None
+    else:
+        return val
+        
+def noneToEmpty(val):
+
+    if val == None:
+        return ''
     else:
         return val
 
