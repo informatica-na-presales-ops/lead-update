@@ -7,7 +7,7 @@ import os
 from flask import Flask, request, render_template
 
 CONN_STRING     = os.getenv('CONN_STRING')
-APIr            = { 'API': 'OK', 'APIVersion': 0.9 }
+APIr            = { 'API': 'OK', 'APIVersion': 1.0 }
 
 app = Flask(__name__)
    
@@ -90,12 +90,9 @@ def setLead(lead_id):
     r = APIr.copy()
     
     try:
-        #r['raw'] = request
-        
         req = request.get_json()
         
         r['lead_id'] = lead_id
-        #r['request_body'] = req
         
         opp_number = emptyToNone(req['opp_number'])
         dq_reason = emptyToNone(req['dq_reason'])
@@ -142,5 +139,4 @@ def noneToEmpty(val):
     else:
         return val
 
-# app.run(debug=False)
 
