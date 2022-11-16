@@ -1,4 +1,4 @@
-FROM python:3.11.0-alpine3.16
+FROM python:3.12.0a2-alpine3.16
 
 # this is required for the psycopg2 python library to work
 RUN /sbin/apk add --no-cache libpq
