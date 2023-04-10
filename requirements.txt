@@ -20,7 +20,7 @@ markupsafe==2.1.1
     #   werkzeug
 notch==2022.1
     # via -r requirements.in
-psycopg2==2.9.5
+psycopg2==2.9.6
     # via -r requirements.in
 waitress==2.1.2
     # via -r requirements.in
