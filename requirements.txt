@@ -24,7 +24,7 @@ notch==2023.1
     # via -r requirements.in
 psycopg2==2.9.9
     # via -r requirements.in
-waitress==2.1.2
+waitress==3.0.0
     # via -r requirements.in
 werkzeug==3.0.0
     # via flask
