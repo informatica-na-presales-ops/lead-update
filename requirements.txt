@@ -10,7 +10,7 @@ blinker==1.6.2
     # via flask
 click==8.1.3
     # via flask
-flask==3.0.1
+flask==3.0.2
     # via -r requirements.in
 itsdangerous==2.1.2
     # via flask
