@@ -1,4 +1,13 @@
 services:
+  pip-compile:
+    entrypoint:
+      - /home/python/venv/bin/pip-compile
+    image: ghcr.io/williamjacksn/pip-tools:py3.12
+    init: true
+    volumes:
+      - ./:/home/python/lead-update
+    working_dir: /home/python/lead-update
+
   shell:
     entrypoint:
       - /bin/sh
