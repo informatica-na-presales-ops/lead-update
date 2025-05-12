@@ -1,13 +1,13 @@
 from flask import request
 from lead_update.lead import app
-from notch import make_log
+from notch import configure
 from os import getenv
 from signal import signal, SIGTERM
 from sys import exit
 from waitress import serve
 from werkzeug.middleware.proxy_fix import ProxyFix
 
-log = make_log('lead-update-launcher')
+configure()
 
 def handle_sigterm(_signal, _frame):
     exit()
