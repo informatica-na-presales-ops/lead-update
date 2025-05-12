@@ -43,7 +43,7 @@ def getLead(lead_id, picklist=False):
         )
         row = cur.fetchone()
 
-        if row == None:
+        if row is None:
             r["status"] = "Unmanaged"
         else:
             r["status"] = row[0]
@@ -150,7 +150,7 @@ def emptyToNone(val):
 
 
 def noneToEmpty(val):
-    if val == None:
+    if val is None:
         return ""
     else:
         return val
